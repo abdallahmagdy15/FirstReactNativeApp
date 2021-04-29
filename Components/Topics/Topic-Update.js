@@ -43,7 +43,7 @@ export default class TopicUpdate extends React.Component {
                         <View style={styles.loginFormView}>
                             <Text style={styles.logoText}>Add or Update Topic</Text>
                             <TextInput value={this.state.topic.Top_Id} onChangeText={this.handleIdChange}
-                                numeric keyboardType="numeric" style={styles.formTextInput}
+                                 keyboardType="numeric" style={styles.formTextInput}
                                 placeholder="Enter ID" />
                             <TextInput value={this.state.topic.Top_Name} onChangeText={this.handleNameChange}
                                 placeholder="Enter Name" style={styles.formTextInput} />
@@ -104,18 +104,18 @@ export default class TopicUpdate extends React.Component {
     }
 
 
-    handleIdChange = (e) => {
+    handleIdChange = (val) => {
         this.setState(prevState => {
             let topic = Object.assign({}, prevState.topic);
-            topic.Top_Id = parseInt(e.target.value);
+            topic.Top_Id = parseInt(val);
             return { topic };
         })
     }
 
-    handleNameChange = (e) => {
+    handleNameChange = (val) => {
         this.setState(prevState => {
             let topic = Object.assign({}, prevState.topic);
-            topic.Top_Name = e.target.value;
+            topic.Top_Name = val;
             return { topic };
         })
     }

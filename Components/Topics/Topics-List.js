@@ -1,6 +1,6 @@
 import React from "react";
 import { getAllTopics, deleteTopic } from '../../Controller/TopicDB'
-import { Picker, StyleSheet, View } from "react-native";
+import { Alert, Picker, StyleSheet, View } from "react-native";
 import { ActivityIndicator, DataTable } from "react-native-paper";
 import { ScrollView } from "react-native-gesture-handler";
 import { Button } from "react-native";
@@ -106,7 +106,7 @@ export default class TopicsList extends React.Component {
                                 </DataTable.Cell>
                                 <DataTable.Cell style={{flex: 3}}>
                                     <Button color="#2a9d8f" onPress={this.select.bind(this, row)} title="Edit" />
-                                    <Button color="#e76f51" onPress={this.delete.bind(this, row.Crs_Id)} title="Del" />
+                                    <Button color="#e76f51" onPress={this.delete.bind(this, row.Top_Id)} title="Del" />
                                 </DataTable.Cell>
                             </DataTable.Row>
                         )
@@ -130,6 +130,9 @@ export default class TopicsList extends React.Component {
                     text: "OK", onPress: () => {
                         deleteTopic(id).then(res => {
                             this.setState({ topics: res.data });
+                        })
+                        .catch(err=>{
+                            console.log(err.response);
                         })
                     }
                 }
