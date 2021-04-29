@@ -22,7 +22,7 @@ export default class CourseUpdate extends React.Component {
             Top_Id: 1,
             Top_Name: 'Web'
         }],
-        num: 5
+        isLoading: false
     }
     constructor(props) {
         super(props);
@@ -52,7 +52,7 @@ export default class CourseUpdate extends React.Component {
 
     componentWillUnmount() {
         this._unsubscribe();
-      }
+    }
 
     render() {
 

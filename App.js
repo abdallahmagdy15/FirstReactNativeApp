@@ -23,7 +23,7 @@ function App() {
     else
       setAuthentication(true);
   })
-
+  console.disableYellowBox = true;
   return (
     <NavigationContainer>
       {<Header

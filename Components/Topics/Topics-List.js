@@ -8,34 +8,34 @@ import { Button } from "react-native";
 export default class TopicsList extends React.Component {
     state = {
         topics: [
-            {
-                Top_Id: 1,
-                Top_Name: 'Web',
-                Course: [{
-                    Crs_Id: 1,
-                    Crs_Name: 'React',
-                    Crs_Duration: 50
-                },
-                {
-                    Crs_Id: 2,
-                    Crs_Name: 'Angular',
-                    Crs_Duration: 60
-                }]
-            },
-            {
-                Top_Id: 2,
-                Top_Name: 'Programming',
-                Course: [{
-                    Crs_Id: 1,
-                    Crs_Name: 'C#',
-                    Crs_Duration: 50
-                },
-                {
-                    Crs_Id: 2,
-                    Crs_Name: 'JavaScript',
-                    Crs_Duration: 60
-                }]
-            }
+            // {
+            //     Top_Id: 1,
+            //     Top_Name: 'Web',
+            //     Course: [{
+            //         Crs_Id: 1,
+            //         Crs_Name: 'React',
+            //         Crs_Duration: 50
+            //     },
+            //     {
+            //         Crs_Id: 2,
+            //         Crs_Name: 'Angular',
+            //         Crs_Duration: 60
+            //     }]
+            // },
+            // {
+            //     Top_Id: 2,
+            //     Top_Name: 'Programming',
+            //     Course: [{
+            //         Crs_Id: 1,
+            //         Crs_Name: 'C#',
+            //         Crs_Duration: 50
+            //     },
+            //     {
+            //         Crs_Id: 2,
+            //         Crs_Name: 'JavaScript',
+            //         Crs_Duration: 60
+            //     }]
+            // }
         ]
     }
     constructor(props) {

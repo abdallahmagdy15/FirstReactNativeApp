@@ -11,18 +11,18 @@ import { ActivityIndicator } from "react-native";
 export default class CoursesList extends React.Component {
     state = {
         courses: [
-              {
-                Crs_Id: 1,
-                Crs_Name: 'React',
-                Crs_Duration: 50,
-                Topic: { Top_Id: 1, Top_Name: 'Web' }
-            },
-            {
-                Crs_Id: 2,
-                Crs_Name: 'Angular',
-                Crs_Duration: 60,
-                Topic: { Top_Id: 1, Top_Name: 'Web' }
-            }
+            //   {
+            //     Crs_Id: 1,
+            //     Crs_Name: 'React',
+            //     Crs_Duration: 50,
+            //     Topic: { Top_Id: 1, Top_Name: 'Web' }
+            // },
+            // {
+            //     Crs_Id: 2,
+            //     Crs_Name: 'Angular',
+            //     Crs_Duration: 60,
+            //     Topic: { Top_Id: 1, Top_Name: 'Web' }
+            // }
         ]
     }
 
