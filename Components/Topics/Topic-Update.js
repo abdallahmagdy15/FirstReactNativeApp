@@ -7,6 +7,7 @@ import { View } from "react-native";
 import { Text } from "react-native";
 import { addTopic, getTopic, updateTopic } from '../../Controller/TopicDB'
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { ActivityIndicator } from "react-native-paper";
 
 export default class TopicUpdate extends React.Component {
     constructor(props) {
@@ -16,7 +17,8 @@ export default class TopicUpdate extends React.Component {
                 Top_Id: '',
                 Top_Name: '',
                 Course: []
-            }
+            },
+            isLoading: false
         }
     }
 
@@ -47,7 +49,7 @@ export default class TopicUpdate extends React.Component {
                     <View style={styles.loginScreenContainer}>
                         <View style={styles.loginFormView}>
                             <Text style={styles.logoText}>Add or Update Topic</Text>
-                            <TextInput value={String(this.state.topic.Top_Id)} onChangeText={this.handleIdChange}
+                            <TextInput value={this.state.topic.Top_Id} onChangeText={this.handleIdChange}
                                 keyboardType="numeric" style={styles.formTextInput}
                                 placeholder="Enter ID" />
                             <TextInput value={this.state.topic.Top_Name} onChangeText={this.handleNameChange}
@@ -68,6 +70,7 @@ export default class TopicUpdate extends React.Component {
                                     color="#e9c46a"
                                 />
                             </View>
+                            <ActivityIndicator animating={this.state.isLoading} color="#00ff00" />
                         </View>
                     </View>
                 </TouchableWithoutFeedback>
@@ -77,15 +80,26 @@ export default class TopicUpdate extends React.Component {
 
     handleSubmit = () => {
         const { Top_Id, Top_Name } = this.state.topic;
-        if (Top_Id == 0 || Top_Name == '') {
+        if (Top_Id == '' || Top_Name == '') {
             Alert.alert('Please fill all the fields!');
             return;
         }
+        this.setState({
+            isLoading: true
+        })
         getTopic(this.state.topic.Top_Id).then(res => {
             //if topic exits then update
             this.state.topic.Course = res.data.Course;
             updateTopic(this.state.topic).then(res => {
+                this.setState({
+                    isLoading: false
+                })
                 this.props.navigation.navigate('TopicsList', res.data)
+            }).catch(err => {
+                this.setState({
+                    isLoading: false
+                })
+                console.log(err.response);
             })
         }).catch(res => {
             console.log(res);
@@ -93,7 +107,16 @@ export default class TopicUpdate extends React.Component {
             if (this.state.topic.Course != undefined)
                 this.state.topic.Course = undefined;
             addTopic(this.state.topic).then(res => {
-                this.props.navigation.navigate('TopicsList', res.data)
+                this.setState({
+                    isLoading: false
+                })
+                console.log(res.data);
+                this.props.navigation.navigate('TopicsList', res.data);
+            }).catch(err => {
+                this.setState({
+                    isLoading: false
+                })
+                console.log(err.response);
             })
         })
     }
@@ -112,7 +135,7 @@ export default class TopicUpdate extends React.Component {
     handleIdChange = (val) => {
         this.setState(prevState => {
             let topic = Object.assign({}, prevState.topic);
-            topic.Top_Id = parseInt(val);
+            topic.Top_Id = val;
             return { topic };
         })
     }

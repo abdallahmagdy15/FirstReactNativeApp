@@ -9,6 +9,7 @@ import { Text } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { addCourse, getCourse, updateCourse } from '../../Controller/CourseDB'
 import { getAllTopics } from '../../Controller/TopicDB'
+import { ActivityIndicator } from "react-native-paper";
 
 export default class CourseUpdate extends React.Component {
     state = {
@@ -16,7 +17,7 @@ export default class CourseUpdate extends React.Component {
             Crs_Id: '',
             Crs_Name: '',
             Crs_Duration: '',
-            Top_Id: 0
+            Top_Id: 1
         },
         topics: [{
             Top_Id: 1,
@@ -105,6 +106,7 @@ export default class CourseUpdate extends React.Component {
                                     color="#e9c46a"
                                 />
                             </View>
+                            <ActivityIndicator animating={this.state.isLoading} color="#00ff00" />
                         </View>
                     </View>
                 </TouchableWithoutFeedback>
@@ -113,19 +115,27 @@ export default class CourseUpdate extends React.Component {
     }
 
     handleSubmit = () => {
-        const { Crs_Id, Crs_Name, Crs_Duration, Top_Id } = this.state.course;
-        if (Crs_Id == 0 || Crs_Name == '' || Crs_Duration == 0 || Top_Id == 0) {
+        const { Crs_Id, Crs_Name, Crs_Duration } = this.state.course;
+        if (Crs_Id == '' || Crs_Name == '' || Crs_Duration == '' ) {
             Alert.alert('Please fill all the fields!');
             return;
         }
-
+        this.setState({
+            isLoading: true
+        })
         getCourse(this.state.course.Crs_Id).then(res => {
             //if student exits then update
             updateCourse(this.state.course).then(res => {
                 console.log("crs updated");
+                this.setState({
+                    isLoading: false
+                })
                 this.props.navigation.navigate('CoursesList', res.data)
             }).catch(err => {
                 console.log(err.response);
+                this.setState({
+                    isLoading: false
+                })
             })
         }).catch(res => {
             console.log(res);
@@ -134,9 +144,15 @@ export default class CourseUpdate extends React.Component {
                 this.state.course.Topic = undefined;
             addCourse(this.state.course).then(res => {
                 console.log("crs added");
+                this.setState({
+                    isLoading: false
+                })
                 this.props.navigation.navigate('CoursesList', res.data)
             }).catch(err => {
                 console.log(err.response);
+                this.setState({
+                    isLoading: false
+                })
             })
         })
     }
@@ -147,7 +163,7 @@ export default class CourseUpdate extends React.Component {
                 Crs_Id: '',
                 Crs_Name: '',
                 Crs_Duration: '',
-                Top_Id: ''
+                Top_Id: 1
             }
         })
     }
