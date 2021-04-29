@@ -3,7 +3,6 @@ import { Alert, Keyboard, KeyboardAvoidingView } from "react-native";
 import styles from "../formStyle";
 import { Button } from 'react-native';
 import { TextInput } from "react-native";
-import { Picker } from "react-native";
 import { View } from "react-native";
 import { Text } from "react-native";
 import { addTopic, getTopic, updateTopic } from '../../Controller/TopicDB'
@@ -14,25 +13,31 @@ export default class TopicUpdate extends React.Component {
         super(props);
         this.state = {
             topic: {
-                Top_Id: 0,
+                Top_Id: '',
                 Top_Name: '',
                 Course: []
             }
         }
-
     }
 
     componentDidMount() {
         const _topic = this.props.route.params;
-        if (_topic != undefined)
-            this.setState({ topic: _topic })
-    }
-
-    componentDidUdate() {
-        const _topic = this.props.route.params;
-        if (_topic != undefined && _topic != this.state.topic) {
+        if (_topic != undefined) {
             this.setState({ topic: _topic })
         }
+        this._unsubscribe = this.props.navigation.addListener('focus', () => {
+            const _topic = this.props.route.params;
+            if (_topic != undefined) {
+                _topic.Top_Id = String(_topic.Top_Id)
+                if (_topic != this.state.topic) {
+                    this.setState({ topic: _topic })
+                }
+            }
+        });
+    }
+
+    componentWillUnmount() {
+        this._unsubscribe();
     }
 
     render() {
@@ -42,15 +47,15 @@ export default class TopicUpdate extends React.Component {
                     <View style={styles.loginScreenContainer}>
                         <View style={styles.loginFormView}>
                             <Text style={styles.logoText}>Add or Update Topic</Text>
-                            <TextInput value={this.state.topic.Top_Id} onChangeText={this.handleIdChange}
-                                 keyboardType="numeric" style={styles.formTextInput}
+                            <TextInput value={String(this.state.topic.Top_Id)} onChangeText={this.handleIdChange}
+                                keyboardType="numeric" style={styles.formTextInput}
                                 placeholder="Enter ID" />
                             <TextInput value={this.state.topic.Top_Name} onChangeText={this.handleNameChange}
                                 placeholder="Enter Name" style={styles.formTextInput} />
                             <View style={styles.formTextInput, {
                                 flexDirection: "row",
                                 justifyContent: "space-evenly",
-                                marginTop:15
+                                marginTop: 15
                             }}>
                                 <Button
                                     onPress={this.handleSubmit}
@@ -71,8 +76,8 @@ export default class TopicUpdate extends React.Component {
     }
 
     handleSubmit = () => {
-        const {Top_Id,Top_Name}=this.state.topic;
-        if(Top_Id==0||Top_Name==''){
+        const { Top_Id, Top_Name } = this.state.topic;
+        if (Top_Id == 0 || Top_Name == '') {
             Alert.alert('Please fill all the fields!');
             return;
         }
@@ -96,7 +101,7 @@ export default class TopicUpdate extends React.Component {
     handleReset = () => {
         this.setState({
             topic: {
-                Top_Id: 0,
+                Top_Id: '',
                 Top_Name: '',
                 Course: []
             }

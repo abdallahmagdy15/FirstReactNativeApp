@@ -13,22 +13,22 @@ import { getAllTopics } from '../../Controller/TopicDB'
 export default class CourseUpdate extends React.Component {
     state = {
         course: {
-            Crs_Id: 0,
+            Crs_Id: '',
             Crs_Name: '',
-            Crs_Duration: 0,
+            Crs_Duration: '',
             Top_Id: 0
         },
         topics: [{
             Top_Id: 1,
             Top_Name: 'Web'
-        }]
+        }],
+        num: 5
     }
     constructor(props) {
         super(props);
     }
 
     componentDidMount() {
-        console.log("crs update : ", this.props.route.params);
         const _course = this.props.route.params;
         if (_course != undefined)
             this.setState({ course: _course })
@@ -38,16 +38,21 @@ export default class CourseUpdate extends React.Component {
         }).catch(err => {
             console.log(err.response);
         })
+
+        this._unsubscribe = this.props.navigation.addListener('focus', () => {
+            const _course = this.props.route.params;
+            if (_course != undefined) {
+                _course.Crs_Id = String(_course.Crs_Id)
+                _course.Crs_Duration = String(_course.Crs_Duration)
+                if (this.state.course != _course)
+                    this.setState({ course: _course })
+            }
+        });
     }
 
-    componentDidUpdate() {
-        console.log("crs update : ", this.props.route.params);
-        const _course = this.props.route.params;
-        if (_course != undefined) {
-            if (this.state.course != _course)
-                this.setState({ course: _course })
-        }
-    }
+    componentWillUnmount() {
+        this._unsubscribe();
+      }
 
     render() {
 
@@ -57,13 +62,17 @@ export default class CourseUpdate extends React.Component {
                     <View style={styles.loginScreenContainer}>
                         <View style={styles.loginFormView}>
                             <Text style={styles.logoText}>Add or Update Course</Text>
-                            <TextInput value={this.state.course.Crs_Id} onChangeText={this.handleIdChange}
-                                numeric keyboardType="numeric"
+                            <TextInput
+                                value={this.state.course.Crs_Id}
+                                onChangeText={this.handleIdChange}
+                                keyboardType="numeric"
                                 placeholder="Enter ID" style={styles.formTextInput} />
+
                             <TextInput value={this.state.course.Crs_Name} onChangeText={this.handleNameChange} placeholder="Enter Name"
                                 style={styles.formTextInput} />
 
-                            <TextInput value={this.state.course.Crs_Duration} onChangeText={this.handleDurationChange} keyboardType="numeric"
+                            <TextInput value={this.state.course.Crs_Duration} onChangeText={this.handleDurationChange}
+                                keyboardType="numeric"
                                 placeholder="Enter Duration" style={styles.formTextInput} />
                             <Text style={{ marginLeft: 16, marginTop: 5, color: "#264653" }}>Pick a topic</Text>
                             <Picker
@@ -135,10 +144,10 @@ export default class CourseUpdate extends React.Component {
     handleReset = () => {
         this.setState({
             course: {
-                Crs_Id: 0,
+                Crs_Id: '',
                 Crs_Name: '',
                 Crs_Duration: '',
-                Top_Id: 0
+                Top_Id: ''
             }
         })
     }
@@ -147,9 +156,9 @@ export default class CourseUpdate extends React.Component {
     handleIdChange = (val) => {
         this.setState(prevState => {
             let course = Object.assign({}, prevState.course);
-            course.Crs_Id = parseInt(val);
+            course.Crs_Id = val;
             return { course };
-        })
+        });
     }
 
     handleNameChange = (val) => {
@@ -163,7 +172,7 @@ export default class CourseUpdate extends React.Component {
     handleDurationChange = (val) => {
         this.setState(prevState => {
             let course = Object.assign({}, prevState.course);
-            course.Crs_Duration = parseInt(val);
+            course.Crs_Duration = val;
             return { course };
         })
     }
@@ -171,7 +180,7 @@ export default class CourseUpdate extends React.Component {
     handleTopicChange = (val) => {
         this.setState(prevState => {
             let course = Object.assign({}, prevState.course);
-            course.Top_Id = parseInt(val);
+            course.Top_Id = val;
             return { course };
         })
     }

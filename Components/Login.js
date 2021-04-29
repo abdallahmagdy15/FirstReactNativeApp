@@ -66,6 +66,7 @@ export default class Login extends Component {
                 console.log("signing in...");
                 AsyncStorage.setItem("username", this.state.username);
                 AsyncStorage.setItem("token", res.data.Authorization);
+                this.props.setAuthentication(true);
                 this.props.navigation.navigate('CoursesList')
             }).catch(function (err) {
                 console.log("Error Signing In", err.response);

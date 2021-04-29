@@ -31,7 +31,7 @@ function App() {
         centerComponent={{ text: 'Ramadan Kareem 🌙 ', style: { color: '#fff', fontWeight: "bold", fontSize: 18, lineHeight: 30 } }}
         rightComponent={
           isAuthenticated ?
-            <Button onPress={logout.bind(this)} color="#264653" title="Logout" />
+            <Button onPress={logout.bind(this, setAuthentication)} color="#264653" title="Logout" />
             : <></>
         }
         containerStyle={{
@@ -39,8 +39,21 @@ function App() {
           paddingTop: 10
         }}
       />}
-      <Tab.Navigator>
-        <Tab.Screen name="Login" component={Login} />
+      <Tab.Navigator
+        tabBarOptions={{
+          activeTintColor: 'tomato',
+          inactiveTintColor: 'gray',
+          labelStyle: {
+            fontSize: 11,
+            fontWeight: "bold"
+          },
+          style: {
+            padding: 5,
+            paddingBottom: 15
+          }
+        }}
+      >
+        <Tab.Screen name="Login" component={()=><Login setAuthentication={setAuthentication} />} />
         <Tab.Screen options={{ title: "Courses List" }} name="CoursesList" component={CoursesList} />
         <Tab.Screen options={{ title: "Update Course" }} name="CourseUpdate" component={CourseUpdate} />
         <Tab.Screen options={{ title: "Topics List" }} name="TopicsList" component={TopicsList} />
@@ -50,9 +63,10 @@ function App() {
   );
 
 }
-const logout = async () => {
+const logout = async (setAuthentication) => {
   AsyncStorage.clear().then(() => {
     Alert.alert('Loged Out !');
+    setAuthentication(false);
   });
 }
 
