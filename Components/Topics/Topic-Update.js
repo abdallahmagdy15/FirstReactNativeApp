@@ -8,6 +8,7 @@ import { Text } from "react-native";
 import { addTopic, getTopic, updateTopic } from '../../Controller/TopicDB'
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { ActivityIndicator } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default class TopicUpdate extends React.Component {
     constructor(props) {
@@ -18,7 +19,8 @@ export default class TopicUpdate extends React.Component {
                 Top_Name: '',
                 Course: []
             },
-            isLoading: false
+            isLoading: false,
+            isAuthenticated: false
         }
     }
 
@@ -35,6 +37,18 @@ export default class TopicUpdate extends React.Component {
                     this.setState({ topic: _topic })
                 }
             }
+
+            AsyncStorage.getItem("username").then((uname) => {
+                console.log(uname);
+                if (uname == null)
+                    this.setState({
+                        isAuthenticated: false
+                    })
+                else
+                    this.setState({
+                        isAuthenticated: true
+                    })
+            });
         });
     }
 
@@ -43,6 +57,14 @@ export default class TopicUpdate extends React.Component {
     }
 
     render() {
+        if (!this.state.isAuthenticated) {
+            return (
+                <View styles={{ flex: 1, justifyContent: "center", height: "100%" }}>
+                    <Text style={{ fontSize: 20, marginTop: 100, marginBottom: 15, color: "#e9c46a", textAlign: "center" }}>You must login first!</Text>
+                    <Button color="#2a9d8f" style={{ marginLeft: 15, marginRight: 15 }} onPress={() => { this.props.navigation.navigate('Login') }} title="Login" />
+                </View>)
+        }
+
         return (
             <KeyboardAvoidingView style={styles.containerView} behavior="padding">
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

@@ -10,6 +10,7 @@ import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { addCourse, getCourse, updateCourse } from '../../Controller/CourseDB'
 import { getAllTopics } from '../../Controller/TopicDB'
 import { ActivityIndicator } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default class CourseUpdate extends React.Component {
     state = {
@@ -23,7 +24,8 @@ export default class CourseUpdate extends React.Component {
             Top_Id: 1,
             Top_Name: 'Web'
         }],
-        isLoading: false
+        isLoading: false,
+        isAuthenticated:false
     }
     constructor(props) {
         super(props);
@@ -48,6 +50,18 @@ export default class CourseUpdate extends React.Component {
                 if (this.state.course != _course)
                     this.setState({ course: _course })
             }
+
+            AsyncStorage.getItem("username").then((uname) => {
+                console.log(uname);
+                if (uname == null)
+                    this.setState({
+                        isAuthenticated: false
+                    })
+                else
+                    this.setState({
+                        isAuthenticated: true
+                    })
+            });
         });
     }
 
@@ -56,6 +70,13 @@ export default class CourseUpdate extends React.Component {
     }
 
     render() {
+        if (!this.state.isAuthenticated) {
+            return (
+                <View styles={{ flex: 1,justifyContent:"center",height:"100%" }}>
+                    <Text style={{ fontSize: 20,marginTop:100,marginBottom:15, color: "#e9c46a",textAlign:"center" }}>You must login first!</Text>
+                    <Button color="#2a9d8f" style={{marginLeft:15,marginRight:15}} onPress={() => { this.props.navigation.navigate('Login') }} title="Login"/>
+                </View>)
+        }
 
         return (
             <KeyboardAvoidingView style={styles.containerView} behavior="padding">
@@ -116,7 +137,7 @@ export default class CourseUpdate extends React.Component {
 
     handleSubmit = () => {
         const { Crs_Id, Crs_Name, Crs_Duration } = this.state.course;
-        if (Crs_Id == '' || Crs_Name == '' || Crs_Duration == '' ) {
+        if (Crs_Id == '' || Crs_Name == '' || Crs_Duration == '') {
             Alert.alert('Please fill all the fields!');
             return;
         }
