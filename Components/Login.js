@@ -1,11 +1,10 @@
 import axios from "axios";
 import React, { Component } from "react";
-import { Alert } from "react-native";
-import { Text, Button } from "react-native";
-import { TextInput } from "react-native";
-import { View } from "react-native";
-// import { withRouter } from "react-router-native";
+import styles from "./formStyle";
+import { Keyboard, Text, View, TextInput, TouchableWithoutFeedback, Alert, KeyboardAvoidingView } from 'react-native';
+import { Button } from 'react-native-elements';
 import { AsyncStorage } from 'react-native';
+
 export default class Login extends Component {
     constructor(props) {
         super(props)
@@ -24,25 +23,30 @@ export default class Login extends Component {
         password: ''
     }
     render() {
-        return (
-            <View>
-                <Text>Sign In</Text>
-                <View>
-                    <Text>Username</Text>
-                    <TextInput onChangeText={this.unameHandler} placeholder="Enter Username" />
-                </View>
 
-                <View>
-                    <Text>Password</Text>
-                    <TextInput placeholder="Enter password"
-                        onChangeText={this.passHandler} />
-                </View>
-                <Button
-                    onPress={this.submitForm}
-                    title="Login"
-                    color="#841584"
-                />
-            </View>
+        return (
+            <KeyboardAvoidingView style={styles.containerView} behavior="padding">
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View style={styles.formScreenContainer}>
+                        <View style={styles.formView}>
+                            <Text style={styles.logoText}>Sign In</Text>
+                            <TextInput
+                                placeholderColor="#c4c3cb" style={styles.formTextInput}
+                                onChangeText={this.unameHandler} placeholder="Enter Username" />
+
+                            <TextInput placeholder="Enter password"
+                                placeholderColor="#c4c3cb" style={styles.formTextInput}
+                                onChangeText={this.passHandler} secureTextEntry={true} />
+                            <Button
+                                buttonStyle={styles.submitButton,
+                                    {backgroundColor:"#2a9d8f",margin:15}}
+                                onPress={this.submitForm}
+                                title={'Login'}
+                            />
+                        </View>
+                    </View>
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView >
         );
     }
     unameHandler = (text) => {
@@ -73,4 +77,3 @@ export default class Login extends Component {
             });
     }
 }
-// export default withRouter(Login);

@@ -1,10 +1,7 @@
 import React from "react";
 import { getAllCourses, deleteCrs } from '../../Controller/CourseDB'
 import { View } from "react-native";
-import { Text } from "react-native";
-//import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@material-ui/core";
 import { DataTable } from 'react-native-paper';
-
 import { Button } from "react-native";
 import { ScrollView } from "react-native";
 import { Alert } from "react-native";
@@ -14,18 +11,18 @@ import { ActivityIndicator } from "react-native";
 export default class CoursesList extends React.Component {
     state = {
         courses: [
-            //   {
-            //     Crs_Id: 1,
-            //     Crs_Name: 'React',
-            //     Crs_Duration: 50,
-            //     Topic: { Top_Id: 1, Top_Name: 'Web' }
-            // },
-            // {
-            //     Crs_Id: 2,
-            //     Crs_Name: 'Angular',
-            //     Crs_Duration: 60,
-            //     Topic: { Top_Id: 1, Top_Name: 'Web' }
-            // }
+              {
+                Crs_Id: 1,
+                Crs_Name: 'React',
+                Crs_Duration: 50,
+                Topic: { Top_Id: 1, Top_Name: 'Web' }
+            },
+            {
+                Crs_Id: 2,
+                Crs_Name: 'Angular',
+                Crs_Duration: 60,
+                Topic: { Top_Id: 1, Top_Name: 'Web' }
+            }
         ]
     }
 
@@ -41,7 +38,7 @@ export default class CoursesList extends React.Component {
             console.log("start loading courses")
             getAllCourses().then((res) => {
                 this.setState({ courses: res.data })
-            }).catch(err=>{
+            }).catch(err => {
                 console.log(err.response);
             })
         }
@@ -49,30 +46,9 @@ export default class CoursesList extends React.Component {
 
     componentDidUpdate() {
         getAllCourses().then((res) => {
-            this.setState({ courses: res.data })
+            if (this.state.courses != res.data)
+                this.setState({ courses: res.data })
         })
-    }
-    renderRow(row) {
-        return (
-            <View style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'row' }}>
-                <View style={{ flex: 1, alignSelf: 'stretch' }} >
-                    <Text>{row.Crs_Id}</Text>
-                </View>
-                <View style={{ flex: 1, alignSelf: 'stretch' }} >
-                    <Text>{row.Crs_Name}</Text>
-                </View>
-                <View style={{ flex: 1, alignSelf: 'stretch' }} >
-                    <Text>{row.Crs_Duration}</Text>
-                </View>
-                <View style={{ flex: 1, alignSelf: 'stretch' }} >
-                    <Text>{row.Topic.Top_Name}</Text>
-                </View>
-                <View style={{ flex: 1, alignSelf: 'stretch' }} >
-                    <Button onPress={this.select.bind(this, row)} title="Edit" />
-                    <Button onPress={this.delete.bind(this, row.Crs_Id)} title="Delete" />
-                </View>
-            </View>
-        );
     }
 
     render() {
@@ -104,20 +80,17 @@ export default class CoursesList extends React.Component {
                         <DataTable.Title >Duration</DataTable.Title>
                         <DataTable.Title>Topic</DataTable.Title>
                         <DataTable.Title></DataTable.Title>
-                        <DataTable.Title></DataTable.Title>
                     </DataTable.Header>
                     {this.state.courses.map((row) => {
                         return (
                             <DataTable.Row key={row.Crs_Id}>
-                                <DataTable.Cell >{row.Crs_Id}</DataTable.Cell>
-                                <DataTable.Cell>{row.Crs_Name}</DataTable.Cell>
-                                <DataTable.Cell >{row.Crs_Duration}</DataTable.Cell>
-                                <DataTable.Cell>{row.Topic.Top_Name}</DataTable.Cell>
-                                <DataTable.Cell>
-                                    <Button color="#47ABD8" onPress={this.select.bind(this, row)} title="Edit" />
-                                </DataTable.Cell>
-                                <DataTable.Cell>
-                                    <Button color="#FF4242" onPress={this.delete.bind(this, row.Crs_Id)} title="Del" />
+                                <DataTable.Cell  style={{flex: 1}}>{row.Crs_Id}</DataTable.Cell>
+                                <DataTable.Cell style={{flex: 2}}>{row.Crs_Name}</DataTable.Cell>
+                                <DataTable.Cell  style={{flex: 1}}>{row.Crs_Duration}</DataTable.Cell>
+                                <DataTable.Cell style={{flex: 2}}>{row.Topic.Top_Name}</DataTable.Cell>
+                                <DataTable.Cell style={{flex:2}}>
+                                    <Button color="#2a9d8f" onPress={this.select.bind(this, row)} title="Edit" />
+                                    <Button color="#e76f51" onPress={this.delete.bind(this, row.Crs_Id)} title="Del" />
                                 </DataTable.Cell>
                             </DataTable.Row>
                         )
@@ -154,5 +127,4 @@ export default class CoursesList extends React.Component {
     }
 
 }
-//export default withRouter(CoursesList)
 

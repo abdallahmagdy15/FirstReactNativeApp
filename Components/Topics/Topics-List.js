@@ -1,11 +1,42 @@
 import React from "react";
 import { getAllTopics, deleteTopic } from '../../Controller/TopicDB'
-import { View } from "react-native";
-import { Text } from "react-native";
+import { Picker, StyleSheet, View } from "react-native";
+import { ActivityIndicator, DataTable } from "react-native-paper";
+import { ScrollView } from "react-native-gesture-handler";
+import { Button } from "react-native";
 
 export default class TopicsList extends React.Component {
     state = {
-        topics: []
+        topics: [
+            {
+                Top_Id: 1,
+                Top_Name: 'Web',
+                Course: [{
+                    Crs_Id: 1,
+                    Crs_Name: 'React',
+                    Crs_Duration: 50
+                },
+                {
+                    Crs_Id: 2,
+                    Crs_Name: 'Angular',
+                    Crs_Duration: 60
+                }]
+            },
+            {
+                Top_Id: 2,
+                Top_Name: 'Programming',
+                Course: [{
+                    Crs_Id: 1,
+                    Crs_Name: 'C#',
+                    Crs_Duration: 50
+                },
+                {
+                    Crs_Id: 2,
+                    Crs_Name: 'JavaScript',
+                    Crs_Duration: 60
+                }]
+            }
+        ]
     }
     constructor(props) {
         super(props)
@@ -24,70 +55,89 @@ export default class TopicsList extends React.Component {
 
     componentDidUpdate() {
         getAllTopics().then(res => {
-            this.setState({ topics: res.data })
+            if (this.state.topics != res.data)
+                this.setState({ topics: res.data })
         })
     }
+
     render() {
+
+        const styles = StyleSheet.create({
+            container: {
+                flex: 1,
+                justifyContent: "center"
+            },
+            horizontal: {
+                flexDirection: "row",
+                justifyContent: "space-around",
+                padding: 10
+            }
+        });
 
         if (this.state.topics.length == 0)
             return (
-                <Text> Topics List </Text>
+                <View style={[styles.container, styles.horizontal]}>
+                    <ActivityIndicator size="large" color="#00ff00" />
+                </View>
             )
 
         return (
-            <View></View>
-
-            // <TableContainer className="p-5" component={Paper}>
-            //     <Table style={{ minWidth: "650" }} aria-label="simple table">
-            //         <TableHead>
-            //             <TableRow style={{backgroundColor:"#d8e3e7"}}>
-            //                 <TableCell>Id</TableCell>
-            //                 <TableCell align="right">Name</TableCell>
-            //                 <TableCell align="right">Courses</TableCell>
-            //                 <TableCell align="right">
-            //                 </TableCell>
-            //             </TableRow>
-            //         </TableHead>
-            //         <TableBody>
-            //             {this.state.topics.map((row) => (
-            //                 <TableRow key={row.Crs_Id}>
-            //                     <TableCell component="th" scope="row">
-            //                         {row.Top_Id}
-            //                     </TableCell>
-            //                     <TableCell align="right">{row.Top_Name}</TableCell>
-            //                     <TableCell align="right">
-            //                         <select className="form-control">
-            //                             {row.Course.map(el => (
-            //                                 <option>{el.Crs_Name}</option>
-            //                             ))}
-            //                         </select>
-            //                     </TableCell>
-            //                     <TableCell align="right">
-            //                         <a className="btn btn-info mr-1" onClick={this.select.bind(this, row)}>Edit</a>
-            //                         <a className="btn btn-danger" onClick={this.delete.bind(this, row.Top_Id)}>Delete</a>
-            //                     </TableCell>
-            //                 </TableRow>
-            //             ))}
-            //         </TableBody>
-            //     </Table>
-            // </TableContainer>
+            <ScrollView>
+                <DataTable>
+                    <DataTable.Header>
+                        <DataTable.Title>Id</DataTable.Title>
+                        <DataTable.Title>Name</DataTable.Title>
+                        <DataTable.Title>Courses</DataTable.Title>
+                        <DataTable.Title></DataTable.Title>
+                    </DataTable.Header>
+                    {this.state.topics.map((row) => {
+                        return (
+                            <DataTable.Row key={row.Top_Id}>
+                                <DataTable.Cell >{row.Top_Id}</DataTable.Cell>
+                                <DataTable.Cell style={{flex: 3}}>{row.Top_Name}</DataTable.Cell>
+                                <DataTable.Cell style={{flex: 4}}>
+                                    <Picker
+                                        selectedValue={row.Course.length > 0 ? row.Course[0].Crs_Id : null}
+                                        style={{ height: 20, width: 100 }}>
+                                        {row.Course.map(t => (
+                                            <Picker.Item label={t.Crs_Name} />
+                                        ))}
+                                    </Picker>
+                                </DataTable.Cell>
+                                <DataTable.Cell style={{flex: 3}}>
+                                    <Button color="#2a9d8f" onPress={this.select.bind(this, row)} title="Edit" />
+                                    <Button color="#e76f51" onPress={this.delete.bind(this, row.Crs_Id)} title="Del" />
+                                </DataTable.Cell>
+                            </DataTable.Row>
+                        )
+                    })}
+                </DataTable>
+            </ScrollView>
         );
     }
 
 
     delete = (id) => {
-        var x = window.confirm("Are you sure?");
-        if (x) {
-            deleteTopic(id).then(res => {
-                this.setState({ topics: res.data });
-            })
-        }
+        Alert.alert(
+            "Confirm Deletion",
+            "Are you Sure?",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+                {
+                    text: "OK", onPress: () => {
+                        deleteTopic(id).then(res => {
+                            this.setState({ topics: res.data });
+                        })
+                    }
+                }
+            ]
+        );
     }
 
     select = (st) => {
         this.props.navigation.navigate('TopicUpdate', st);
     }
-
-
 }
-//export default withRouter(TopicsList)
